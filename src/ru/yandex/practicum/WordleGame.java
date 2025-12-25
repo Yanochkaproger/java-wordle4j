@@ -1,6 +1,5 @@
 package ru.yandex.practicum;
 
-import ru.yandex.practicum.exception.GameException;
 import ru.yandex.practicum.exception.InvalidWordException;
 import ru.yandex.practicum.exception.WordNotInDictionary;
 
@@ -129,7 +128,7 @@ public class WordleGame {
     public List<GuessResult> getHistory() {
         return new ArrayList<>(history);
     }
-    // Для тестов: фиксированный ответ
+
     WordleGame(WordleDictionary dictionary, String fixedAnswer, PrintWriter log) {
         this.dictionary = dictionary;
         this.log = log;
