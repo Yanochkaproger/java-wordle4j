@@ -123,7 +123,7 @@ public class WordleGame {
     }
 
     public boolean isSolved() {
-        return !history.isEmpty() && "+++++".equals(history.get(history.size() -1).getFeedback());
+        return !history.isEmpty() && "+++++".equals(history.get(history.size() - 1).getFeedback());
     }
 
     public int getStepsLeft() {
