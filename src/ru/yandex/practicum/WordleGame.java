@@ -13,12 +13,16 @@ public class WordleGame {
     private final List<GuessResult> history;
     private final PrintWriter log;
 
+    private int hintsUsed = 0;
+    private static final int MAX_HINTS = 3;
+
     public WordleGame(WordleDictionary dictionary, PrintWriter log) {
         this.dictionary = dictionary;
         this.log = log;
         this.answer = dictionary.getRandomWord();
         this.stepsLeft = 6;
         this.history = new ArrayList<>();
+        this.hintsUsed = 0;
         log.println("Загадано слово: " + answer); // только в лог!
     }
 
@@ -93,18 +97,25 @@ public class WordleGame {
     }
 
     private GuessResult suggestHint() {
+        if (hintsUsed >= MAX_HINTS) {
+            return new GuessResult("(подсказка)", "Подсказки закончились!");
+        }
+
+        hintsUsed++;
+        int remaining = MAX_HINTS - hintsUsed;
+
         List<String> candidates = dictionary.filterByGuesses(history);
-        log.println("Подсказка: подходящих слов = " + candidates.size());
+        log.println("Подсказка #" + hintsUsed + ": подходящих слов = " + candidates.size());
 
         String hint;
         if (candidates.isEmpty()) {
-            log.println("⚠️ Нет подходящих слов! Возможно, противоречивая история.");
+            log.println("⚠️ Нет подходящих слов! Даю случайное.");
             hint = dictionary.getRandomWord(); // fallback
         } else {
             hint = candidates.get(new Random().nextInt(candidates.size()));
         }
 
-        return new GuessResult("(подсказка)", hint);
+        return new GuessResult("(подсказка)", hint + "(осталось: " + remaining + ")");
     }
 
     public boolean isGameOver() {
@@ -112,13 +123,15 @@ public class WordleGame {
     }
 
     public boolean isSolved() {
-        if (history.isEmpty()) return false;
-        GuessResult last = history.get(history.size() - 1);
-        return "+++++".equals(last.getFeedback());
+        return !history.isEmpty() && "+++++".equals(history.get(history.size() -1).getFeedback());
     }
 
     public int getStepsLeft() {
         return stepsLeft;
+    }
+
+    public int getHintsLeft() {
+        return MAX_HINTS - hintsUsed;
     }
 
     public String getAnswer() {
@@ -135,6 +148,7 @@ public class WordleGame {
         this.answer = normalize(fixedAnswer);
         this.stepsLeft = 6;
         this.history = new ArrayList<>();
+        this.hintsUsed = 0;
         log.println("[TEST] Загадано слово: " + this.answer);
     }
 }

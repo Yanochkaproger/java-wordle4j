@@ -32,8 +32,15 @@ public class Wordle {
             System.out.println("Подсказка: + = верная позиция, ^ = есть, но не здесь, - = нет такой буквы.\n");
 
             while (!game.isGameOver()) {
-                System.out.printf("Осталось ходов: %d. Ваш ход: ", game.getStepsLeft());
-                String input = scanner.nextLine().trim();
+                System.out.printf("Осталось: %d ходов, %d подсказок. Ваш ход (введите 'стоп' для выхода): ",
+                        game.getStepsLeft(), game.getHintsLeft());
+
+                String input = scanner.nextLine();
+
+                if ("стоп".equalsIgnoreCase(input.trim()) || "exit".equalsIgnoreCase(input.trim())) {
+                    System.out.println("\n Игра прервана. Загаданное слово было: " + game.getAnswer());
+                    return;
+                }
 
                 try {
                     GuessResult result = game.makeGuess(input);
@@ -58,7 +65,7 @@ public class Wordle {
             if (game.isSolved()) {
                 System.out.println("\n🎉 Поздравляем! Вы угадали слово \"" + game.getAnswer() + "\"!");
             } else {
-                System.out.println("\n😞 К сожалению, попытки закончились.");
+                System.out.println("\n😞 К сожалению, попытки и подсказки исчерпаны.");
                 System.out.println("Загаданное слово: " + game.getAnswer());
             }
 
